@@ -454,5 +454,5 @@ Tiempo de respuesta de autenticación: 445 ms
 
 
 
-Senior QA Enginner Automation Funtional - David Rodríguez Castillo
+Senior QA Engineer Automation Functional - David Rodríguez Castillo
 
