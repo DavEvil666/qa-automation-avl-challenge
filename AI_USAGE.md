@@ -1,4 +1,4 @@
-\# Documentación sobre el uso de IA
+# Documentación sobre el uso de IA
 
 
 
@@ -6,7 +6,7 @@ Este documento describe cómo se utilizó la asistencia de IA durante el desarro
 
 
 
-\## Propósito del uso de IA
+## Propósito del uso de IA
 
 
 
@@ -34,49 +34,49 @@ El candidato fue responsable de:
 
 
 
-\* Seleccionar y validar el enfoque de automatización.
+* Seleccionar y validar el enfoque de automatización.
 
 
 
-\* Configurar el entorno local.
+* Configurar el entorno local.
 
 
 
-\* Instalar y configurar Appium, WebdriverIO, UiAutomator2 y Playwright.
+* Instalar y configurar Appium, WebdriverIO, UiAutomator2 y Playwright.
 
 
 
-\* Crear la estructura del proyecto.
+* Crear la estructura del proyecto.
 
-\* Ejecución local de todas las pruebas.
-
-
-
-\* Depuración de errores de ejecución reales.
+* Ejecución local de todas las pruebas.
 
 
 
-\* Inspección de volcados de jerarquía de la interfaz de usuario de Android.
+* Depuración de errores de ejecución reales.
 
 
 
-\* Determinación de qué selectores eran lo suficientemente estables para la automatización.
+* Inspección de volcados de jerarquía de la interfaz de usuario de Android.
 
 
 
-\* Refactorización de selectores para reducir la inestabilidad.
+* Determinación de qué selectores eran lo suficientemente estables para la automatización.
 
 
 
-\* Validación de contratos de API mediante JSON Schema.
+* Refactorización de selectores para reducir la inestabilidad.
 
 
 
-\* Medición de los tiempos de respuesta de la API en función del requisito del SLA.
+* Validación de contratos de API mediante JSON Schema.
 
 
 
-\* Revisión y ajuste de la documentación final.
+* Medición de los tiempos de respuesta de la API en función del requisito del SLA.
+
+
+
+* Revisión y ajuste de la documentación final.
 
 
 
@@ -84,7 +84,7 @@ La asistencia de IA se utilizó únicamente después de que el candidato tuviera
 
 
 
-\## Áreas donde se utilizó la IA
+## Áreas donde se utilizó la IA
 
 
 
@@ -92,35 +92,35 @@ La IA se utilizó para apoyar las siguientes actividades:
 
 
 
-\* Sugerir una estructura de proyecto limpia para pruebas móviles, de API y de eventos opcionales.
+* Sugerir una estructura de proyecto limpia para pruebas móviles, de API y de eventos opcionales.
 
 
 
-\* Proporcionar ejemplos de configuración de WebdriverIO para Appium.
+* Proporcionar ejemplos de configuración de WebdriverIO para Appium.
 
 
 
-\* Proporcionar ejemplos de pruebas de API de Playwright.
+* Proporcionar ejemplos de pruebas de API de Playwright.
 
 
 
-\* Sugerir la organización del modelo de objetos de página (POM).
+* Sugerir la organización del modelo de objetos de página (POM).
 
 
 
-\* Ayudar con la interpretación de los registros de errores de Appium y WebdriverIO.
+* Ayudar con la interpretación de los registros de errores de Appium y WebdriverIO.
 
 
 
-\* Ayudar a comparar diferentes estrategias de selección.
+* Ayudar a comparar diferentes estrategias de selección.
 
 
 
-\* Apoyar la redacción de la documentación para el archivo README y la explicación del uso de la IA. Todas las sugerencias generadas se revisaron, adaptaron y validaron manualmente antes de incluirlas en el proyecto final.
+* Apoyar la redacción de la documentación para el archivo README y la explicación del uso de la IA. Todas las sugerencias generadas se revisaron, adaptaron y validaron manualmente antes de incluirlas en el proyecto final.
 
 
 
-\## Decisiones de automatización móvil
+## Decisiones de automatización móvil
 
 
 
@@ -162,7 +162,7 @@ Esta fue una decisión de depuración manual e ingeniería con el apoyo de la IA
 
 
 
-\## Decisiones de automatización de inicio de sesión
+## Decisiones de automatización de inicio de sesión
 
 
 
@@ -170,19 +170,19 @@ Para el flujo de inicio de sesión, el candidato inspeccionó la jerarquía de l
 
 
 
-\* Campo de nombre de usuario.
+* Campo de nombre de usuario.
 
 
 
-\* Campo de contraseña.
+* Campo de contraseña.
 
 
 
-\* Botón de inicio de sesión.
+* Botón de inicio de sesión.
 
 
 
-\* Título de inicio de sesión.
+* Título de inicio de sesión.
 
 
 
@@ -190,11 +190,11 @@ Los escenarios de inicio de sesión finales contemplaron:
 
 
 
-\* Inicio de sesión exitoso con credenciales válidas.
+* Inicio de sesión exitoso con credenciales válidas.
 
 
 
-\* Validación de inicio de sesión negativa con un usuario bloqueado.
+* Validación de inicio de sesión negativa con un usuario bloqueado.
 
 
 
@@ -206,7 +206,7 @@ Esta decisión mejoró la fiabilidad de la prueba y redujo la dependencia de men
 
 
 
-\## Decisiones de automatización de la API
+## Decisiones de automatización de la API
 
 
 
@@ -218,27 +218,27 @@ El candidato implementó y validó:
 
 
 
-\* Generación de tokens de autenticación.
+* Generación de tokens de autenticación.
 
 
 
-\* Creación de reservas.
+* Creación de reservas.
 
 
 
-\* Actualización de reservas.
+* Actualización de reservas.
 
 
 
-\* Validaciones de códigos de estado HTTP.
+* Validaciones de códigos de estado HTTP.
 
 
 
-\* Validaciones de esquemas JSON.
+* Validaciones de esquemas JSON.
 
 
 
-\* Validación de SLA inferior a 1,5 segundos.
+* Validación de SLA inferior a 1,5 segundos.
 
 
 
@@ -246,7 +246,7 @@ La IA proporcionó ejemplos de estructuras y sintaxis, pero el candidato ejecut�
 
 
 
-\## Gestión de SLA
+## Gestión de SLA
 
 
 
@@ -282,15 +282,15 @@ Se resolvieron varios problemas mediante la depuración y validación manual:
 
 
 
-\* Configuración del servidor Appium.
+* Configuración del servidor Appium.
 
 
 
-\* Conectividad del emulador de Android.
+* Conectividad del emulador de Android.
 
 
 
-\* Validación de la ruta ADB.
+* Validación de la ruta ADB.
 
 
 
@@ -298,11 +298,11 @@ Se resolvieron varios problemas mediante la depuración y validación manual:
 
 
 
-\* Selectores móviles incorrectos.
+* Selectores móviles incorrectos.
 
 
 
-\* Elementos visibles no clicables
+* Elementos visibles no clicables
 
 
 
