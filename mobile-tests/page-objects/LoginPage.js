@@ -15,8 +15,13 @@ class LoginPage {
         return $('android=new UiSelector().resourceId("com.saucelabs.mydemoapp.android:id/loginBtn")');
     }
 
+    // El resource-id "productTV" es el encabezado genérico de pantalla (lo usan
+    // tanto "Products" como "My Cart" — confirmado contra catalog.xml y cart.xml).
+    // Aquí se mantiene el filtro por texto a propósito: lo que se valida es que
+    // se llegó específicamente a la pantalla de catálogo tras el login, no solo
+    // que existe un encabezado cualquiera.
     get productsTitle() {
-        return $('android=new UiSelector().text("Products")');
+        return $('android=new UiSelector().resourceId("com.saucelabs.mydemoapp.android:id/productTV").text("Products")');
     }
 
     async waitForLoginScreen() {
