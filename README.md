@@ -450,6 +450,48 @@ Tiempo de respuesta de autenticación: 445 ms
 
 
 
+
+
+## Pruebas opcionales de eventos de Kafka
+
+Este proyecto incluye una prueba opcional de contrato de eventos compatible con Kafka que utiliza Redpanda, KafkaJS, Playwright y AJV.
+
+La prueba de eventos valida un evento `booking.created` mediante:
+
+* La creación de un tema compatible con Kafka.
+
+* La publicación de un evento `booking.created`.
+
+* El consumo del evento desde Kafka.
+
+* La validación del evento consumido con respecto a un contrato de esquema JSON.
+
+* La confirmación de campos clave de negocio como `eventType`, `bookingId` y los datos del cliente.
+
+Las pruebas de Kafka son opcionales y no se ejecutan a menos que se habiliten explícitamente.
+
+### Iniciar Kafka / Redpanda
+
+```bash
+docker compose -f docker-compose.kafka.yml up -d
+```
+### Ejecutar pruebas de eventos de Kafka
+
+```bash
+set KAFKA_ENABLED=true
+npm run test:events
+```
+
+Resultado esperado:
+
+```text
+1 superada
+```
+
+Si `KAFKA_ENABLED` no está configurado como `true`, la prueba de Kafka se omite intencionalmente, ya que se trata de una ruta de ejecución adicional.
+
+
+
 \## Autor
 
 

@@ -304,3 +304,27 @@ Se resolvieron varios problemas mediante la depuración y validación manual:
 
 \* Elementos visibles no clicables
 
+
+
+## Pruebas de Kafka / Eventos
+
+Como beneficio adicional opcional, se implementaron pruebas de eventos compatibles con Kafka utilizando Redpanda, KafkaJS, Playwright y AJV.
+
+El candidato fue responsable de:
+
+* Crear la estructura de carpetas para las pruebas de eventos.
+
+* Definir el esquema del evento `booking.created`.
+
+* Implementar el flujo de pruebas del productor y el consumidor.
+
+* Ejecutar Redpanda localmente mediante Docker Compose.
+
+* Depurar problemas de sincronización del consumidor.
+
+* Mejorar la estabilidad de las pruebas utilizando un tema único por ejecución.
+
+* Validar que el evento consumido coincidiera con el contrato del esquema JSON esperado.
+
+Se utilizó IA como herramienta de apoyo para la orientación en la implementación y sugerencias de depuración, pero la validación final la realizó el candidato localmente.
+
