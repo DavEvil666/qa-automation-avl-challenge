@@ -1,864 +1,465 @@
-\# Documentación de Flujo – QA Automation Challenge
+# Documentación de Flujo – QA Automation Challenge
 
+## 1. Propósito
 
-
-\## 1. Propósito
-
-
-
-Este documento describe los flujos de prueba automatizados implementados para el desafío técnico de automatización QA.
-
-
+Este documento describe los flujos de prueba automatizados implementados para el desafío técnico **QA Automation Challenge**.
 
 La solución cubre las siguientes capas:
 
+* Automatización móvil sobre Android.
+* Automatización de servicios API.
+* Validación de contratos con JSON Schema.
+* Pruebas de eventos usando un broker compatible con Kafka.
+* Generación de reportes con Allure.
 
+El objetivo de este documento es explicar el flujo de ejecución de punta a punta, los escenarios automatizados, las decisiones técnicas tomadas y los resultados esperados.
 
-\* Automatización móvil.
+---
 
-\* Automatización de API.
+## 2. Alcance de la Solución
 
-\* Validación de contratos.
+La automatización implementada valida los siguientes frentes:
 
-\* Pruebas de eventos usando un broker compatible con Kafka.
+| Capa       | Herramientas                       | Objetivo                                           |
+| ---------- | ---------------------------------- | -------------------------------------------------- |
+| Mobile     | Appium, WebdriverIO, UiAutomator2  | Validar flujos críticos de la app Android          |
+| API        | Playwright, AJV                    | Validar endpoints, respuestas y contratos          |
+| Eventos    | Redpanda, KafkaJS, Playwright, AJV | Validar publicación, consumo y contrato de eventos |
+| Reportería | Allure                             | Visualizar resultados de ejecución                 |
 
-\* Reportería de pruebas con Allure.
+---
 
+## 3. Flujo General de Ejecución
 
-
-El objetivo es explicar el flujo de ejecución de punta a punta, el orden recomendado de ejecución, los escenarios automatizados y los resultados esperados.
-
-
-
-\---
-
-
-
-\## 2. Flujo General de Ejecución
-
-
-
-El flujo general de ejecución es el siguiente:
-
-
+El flujo general de ejecución se divide por capas para mantener independencia, trazabilidad y facilidad de mantenimiento.
 
 ```mermaid
-
 flowchart TD
-
-&#x20;   A\[Inicio de ejecución] --> B\[Validar dependencias del proyecto]
-
-&#x20;   B --> C\[Ejecutar pruebas de API]
-
-&#x20;   C --> D\[Iniciar emulador Android]
-
-&#x20;   D --> E\[Iniciar servidor Appium]
-
-&#x20;   E --> F\[Ejecutar pruebas móviles]
-
-&#x20;   F --> G\[Iniciar broker Redpanda/Kafka]
-
-&#x20;   G --> H\[Ejecutar prueba de contrato de eventos]
-
-&#x20;   H --> I\[Generar reporte Allure]
-
-&#x20;   I --> J\[Revisar resultados finales]
-
+    A[Inicio de ejecución] --> B[Validar estado del repositorio]
+    B --> C[Ejecutar pruebas de API]
+    C --> D[Validar emulador Android]
+    D --> E[Iniciar servidor Appium]
+    E --> F[Ejecutar pruebas móviles]
+    F --> G[Iniciar Redpanda/Kafka]
+    G --> H[Ejecutar prueba de eventos]
+    H --> I[Generar reporte Allure]
+    I --> J[Revisar resultados finales]
 ```
 
+---
 
+## 4. Estructura del Proyecto
 
-La ejecución está dividida por responsabilidades para mantener cada capa de prueba independiente, clara y mantenible.
-
-
-
-\---
-
-
-
-\## 3. Flujo de Estructura del Proyecto
-
-
+El proyecto está organizado por responsabilidad funcional y técnica.
 
 ```mermaid
-
 flowchart TD
+    A[qa-automation-avl-challenge] --> B[api-tests]
+    A --> C[mobile-tests]
+    A --> D[event-tests]
+    A --> E[apps]
+    A --> F[README.md]
+    A --> G[AI_USAGE.md]
+    A --> H[FLOW_DOCUMENTATION.md]
+    A --> I[docker-compose.kafka.yml]
 
-&#x20;   A\[qa-automation-avl-challenge] --> B\[api-tests]
+    B --> B1[Specs de API]
+    B --> B2[Configuración API]
+    B --> B3[Esquemas JSON]
 
-&#x20;   A --> C\[mobile-tests]
+    C --> C1[Specs móviles]
+    C --> C2[Page Objects]
+    C --> C3[Configuración WebdriverIO]
 
-&#x20;   A --> D\[event-tests]
-
-&#x20;   A --> E\[apps]
-
-&#x20;   A --> F\[README.md]
-
-&#x20;   A --> G\[AI\_USAGE.md]
-
-&#x20;   A --> H\[docker-compose.kafka.yml]
-
-&#x20;   A --> I\[FLOW\_DOCUMENTATION.md]
-
-
-
-&#x20;   B --> B1\[Specs de API]
-
-&#x20;   B --> B2\[Configuración API]
-
-&#x20;   B --> B3\[Esquemas JSON]
-
-
-
-&#x20;   C --> C1\[Specs móviles]
-
-&#x20;   C --> C2\[Page Objects]
-
-&#x20;   C --> C3\[Configuración WebdriverIO]
-
-
-
-&#x20;   D --> D1\[Specs de eventos]
-
-&#x20;   D --> D2\[Esquemas de eventos]
-
+    D --> D1[Specs de eventos]
+    D --> D2[Esquemas de eventos]
 ```
 
+### Archivos principales
 
+| Archivo / Carpeta          | Descripción                                                |
+| -------------------------- | ---------------------------------------------------------- |
+| `README.md`                | Documentación general del proyecto, comandos y cobertura   |
+| `AI_USAGE.md`              | Explicación del uso responsable de IA                      |
+| `FLOW_DOCUMENTATION.md`    | Documentación detallada de los flujos automatizados        |
+| `mobile-tests`             | Automatización móvil con Appium y WebdriverIO              |
+| `api-tests`                | Automatización de API con Playwright y AJV                 |
+| `event-tests`              | Prueba opcional de eventos con KafkaJS y Redpanda          |
+| `apps`                     | APK usado para la ejecución móvil                          |
+| `docker-compose.kafka.yml` | Configuración de Redpanda como broker compatible con Kafka |
 
-\---
+---
 
+## 5. Flujo de Automatización Móvil
 
+### 5.1 Objetivo
 
-\## 4. Flujo de Automatización Móvil
+Validar flujos críticos de usuario en una aplicación Android usando Appium, WebdriverIO y UiAutomator2.
 
+### 5.2 Precondiciones
 
+Antes de ejecutar las pruebas móviles se debe cumplir lo siguiente:
 
-\### Objetivo
-
-
-
-Validar los flujos críticos de usuario en la aplicación móvil Android usando Appium, WebdriverIO y UiAutomator2.
-
-
-
-\### Precondiciones
-
-
-
-\* El emulador Android debe estar encendido.
-
-\* El servidor Appium debe estar corriendo en el puerto `4723`.
-
-\* El APK debe estar disponible en la carpeta `apps`.
-
-\* ADB debe detectar el emulador como dispositivo activo.
-
-
+* El emulador Android debe estar encendido.
+* ADB debe detectar el dispositivo.
+* El servidor Appium debe estar corriendo en el puerto `4723`.
+* El APK debe estar disponible en la carpeta `apps`.
 
 Comando para validar el emulador:
 
-
-
 ```bash
-
 adb devices
-
 ```
-
-
 
 Resultado esperado:
 
-
-
 ```text
-
 emulator-5554   device
-
 ```
 
+Comando para iniciar Appium:
 
+```bash
+appium
+```
 
-\---
+---
 
+## 6. Flujo Mobile 1 – Apertura de la Aplicación
 
-
-\## 5. Flujo Mobile 1 – Apertura de la Aplicación
-
-
-
-\### Objetivo
-
-
+### Objetivo
 
 Validar que la aplicación móvil abra correctamente y muestre el catálogo de productos.
 
-
-
-\### Flujo
-
-
+### Flujo
 
 ```mermaid
-
 flowchart TD
-
-&#x20;   A\[Iniciar sesión Appium] --> B\[Instalar o abrir APK]
-
-&#x20;   B --> C\[Abrir aplicación móvil]
-
-&#x20;   C --> D\[Esperar pantalla de catálogo]
-
-&#x20;   D --> E\[Validar que el catálogo sea visible]
-
+    A[Iniciar sesión Appium] --> B[Abrir aplicación]
+    B --> C[Esperar pantalla inicial]
+    C --> D[Validar catálogo de productos]
 ```
 
+### Resultado esperado
 
+La aplicación debe abrir correctamente y el catálogo de productos debe estar visible.
 
-\### Resultado Esperado
+---
 
+## 7. Flujo Mobile 2 – Catálogo y Carrito
 
+### Objetivo
 
-La aplicación debe abrir correctamente y el catálogo de productos debe ser visible.
+Validar que un usuario pueda seleccionar un producto, abrir su detalle, agregarlo al carrito y verificar que el producto aparezca correctamente en el carrito.
 
-
-
-\---
-
-
-
-\## 6. Flujo Mobile 2 – Catálogo y Carrito
-
-
-
-\### Objetivo
-
-
-
-Validar que un usuario pueda abrir el detalle de un producto, agregarlo al carrito y verificar que el producto seleccionado aparezca correctamente en el carrito.
-
-
-
-\### Flujo
-
-
+### Flujo
 
 ```mermaid
-
 flowchart TD
-
-&#x20;   A\[Abrir aplicación] --> B\[Visualizar catálogo]
-
-&#x20;   B --> C\[Seleccionar primer producto]
-
-&#x20;   C --> D\[Abrir detalle del producto]
-
-&#x20;   D --> E\[Presionar Add to cart]
-
-&#x20;   E --> F\[Abrir carrito]
-
-&#x20;   F --> G\[Validar producto en carrito]
-
+    A[Abrir aplicación] --> B[Visualizar catálogo]
+    B --> C[Seleccionar primer producto]
+    C --> D[Abrir detalle del producto]
+    D --> E[Agregar producto al carrito]
+    E --> F[Abrir carrito]
+    F --> G[Validar producto en carrito]
 ```
 
+### Decisión técnica
 
+Durante la validación de selectores, se identificó que algunos elementos visibles no eran necesariamente los más estables para automatizar.
 
-\### Decisión Técnica
-
-
-
-Durante la validación de selectores, se identificó que el título del producto era visible en la interfaz, pero no era el elemento más confiable para hacer clic.
-
-
-
-Por esa razón, se inspeccionó la jerarquía real de Android usando:
-
-
+En el flujo de catálogo, el título del producto era visible, pero el elemento más confiable para hacer clic era la imagen del producto. Para confirmar esto se inspeccionó la jerarquía real de Android usando:
 
 ```bash
-
 adb shell uiautomator dump
-
 ```
 
+Con base en esa validación, se seleccionó un `resourceId` estable asociado a la imagen del producto.
 
-
-Con base en esa validación, se seleccionó el resource ID de la imagen del producto como el elemento clicable más estable.
-
-
-
-\### Resultado Esperado
-
-
+### Resultado esperado
 
 El producto agregado desde el catálogo debe visualizarse correctamente dentro del carrito.
 
+---
 
+## 8. Flujo Mobile 3 – Login
 
-\---
-
-
-
-\## 7. Flujo Mobile 3 – Login
-
-
-
-\### Objetivo
-
-
+### Objetivo
 
 Validar el comportamiento del login exitoso y del login negativo.
 
+### Escenarios cubiertos
 
+* Login exitoso con credenciales válidas.
+* Login negativo con usuario bloqueado.
 
-\### Escenarios Cubiertos
-
-
-
-\* Login exitoso con credenciales válidas.
-
-\* Login negativo con usuario bloqueado.
-
-
-
-\### Flujo
-
-
+### Flujo
 
 ```mermaid
-
 flowchart TD
-
-&#x20;   A\[Abrir aplicación] --> B\[Abrir menú]
-
-&#x20;   B --> C\[Seleccionar opción Login]
-
-&#x20;   C --> D\[Ingresar credenciales]
-
-&#x20;   D --> E\[Presionar botón Login]
-
-&#x20;   E --> F{Tipo de credenciales}
-
-&#x20;   F -->|Usuario válido| G\[Se muestra pantalla de productos]
-
-&#x20;   F -->|Usuario bloqueado| H\[No se muestra pantalla de productos]
-
+    A[Abrir aplicación] --> B[Abrir menú]
+    B --> C[Seleccionar opción Login]
+    C --> D[Ingresar credenciales]
+    D --> E[Presionar botón Login]
+    E --> F{Tipo de usuario}
+    F -->|Usuario válido| G[Se muestra pantalla de productos]
+    F -->|Usuario bloqueado| H[No se muestra pantalla de productos]
 ```
 
+### Decisión técnica
 
+Para el escenario negativo, la validación se enfocó en el comportamiento esperado de negocio: un usuario bloqueado no debe acceder a la pantalla de productos.
 
-\### Decisión Técnica
+Esta decisión es más estable que depender de un mensaje de error dinámico en la interfaz.
 
+### Resultados esperados
 
+* El usuario válido debe acceder correctamente a la pantalla de productos.
+* El usuario bloqueado no debe acceder a la pantalla de productos.
 
-Para el escenario negativo de login, la validación se enfocó en el comportamiento esperado de negocio: un usuario bloqueado no debe acceder a la pantalla de productos.
+---
 
+## 9. Flujo de Automatización API
 
-
-Este enfoque es más estable que depender de un mensaje de error dinámico en la interfaz.
-
-
-
-\### Resultados Esperados
-
-
-
-\* El usuario válido debe acceder correctamente a la pantalla de productos.
-
-\* El usuario bloqueado no debe acceder a la pantalla de productos.
-
-
-
-\---
-
-
-
-\## 8. Flujo de Automatización API
-
-
-
-\### Objetivo
-
-
+### Objetivo
 
 Validar operaciones principales de API usando Playwright y AJV.
 
+### Endpoints cubiertos
 
+* Autenticación.
+* Creación de reserva.
+* Actualización de reserva.
 
-\### Endpoints Cubiertos
-
-
-
-\* Autenticación.
-
-\* Creación de reserva.
-
-\* Actualización de reserva.
-
-
-
-\### Flujo
-
-
+### Flujo general API
 
 ```mermaid
-
 flowchart TD
-
-&#x20;   A\[Iniciar suite API] --> B\[Ejecutar warm-up de API pública]
-
-&#x20;   B --> C\[Generar token de autenticación]
-
-&#x20;   C --> D\[Validar respuesta de autenticación]
-
-&#x20;   D --> E\[Crear reserva]
-
-&#x20;   E --> F\[Validar esquema de reserva]
-
-&#x20;   F --> G\[Actualizar reserva]
-
-&#x20;   G --> H\[Validar respuesta actualizada]
-
+    A[Iniciar suite API] --> B[Ejecutar warm-up]
+    B --> C[Generar token de autenticación]
+    C --> D[Validar respuesta de auth]
+    D --> E[Crear reserva]
+    E --> F[Validar contrato de reserva]
+    F --> G[Actualizar reserva]
+    G --> H[Validar respuesta actualizada]
 ```
 
+---
 
+## 10. Flujo API 1 – Autenticación
 
-\---
-
-
-
-\## 9. Flujo API 1 – Autenticación
-
-
-
-\### Objetivo
-
-
+### Objetivo
 
 Generar un token de autenticación válido y validar el tiempo de respuesta contra el SLA requerido.
 
+### Validaciones
 
+* Código de estado HTTP.
+* Presencia del token.
+* Tiempo de respuesta menor a `1.5` segundos.
 
-\### Validaciones
-
-
-
-\* Código de estado HTTP.
-
-\* Presencia del token.
-
-\* Tiempo de respuesta inferior a 1.5 segundos.
-
-
-
-\### Decisión Técnica
-
-
+### Decisión técnica
 
 Se ejecuta una solicitud de calentamiento antes de medir el endpoint `/auth`.
 
-
-
 Esto evita incluir factores externos como resolución DNS, negociación TLS o comportamiento de arranque en frío de una API pública dentro de la medición real del SLA.
 
-
-
-\### Resultado Esperado
-
-
+### Resultado esperado
 
 El endpoint de autenticación debe retornar un token válido y responder dentro del SLA definido.
 
+---
 
+## 11. Flujo API 2 – Creación de Reserva
 
-\---
-
-
-
-\## 10. Flujo API 2 – Creación de Reserva
-
-
-
-\### Objetivo
-
-
+### Objetivo
 
 Crear una reserva y validar que la respuesta cumpla con el contrato esperado mediante JSON Schema.
 
-
-
-\### Flujo
-
-
+### Flujo
 
 ```mermaid
-
 flowchart TD
-
-&#x20;   A\[Enviar solicitud de creación de reserva] --> B\[Recibir respuesta]
-
-&#x20;   B --> C\[Validar código HTTP]
-
-&#x20;   C --> D\[Validar cuerpo de respuesta]
-
-&#x20;   D --> E\[Validar JSON Schema con AJV]
-
+    A[Enviar solicitud de creación] --> B[Recibir respuesta]
+    B --> C[Validar código HTTP]
+    C --> D[Validar cuerpo de respuesta]
+    D --> E[Validar JSON Schema con AJV]
 ```
 
-
-
-\### Resultado Esperado
-
-
+### Resultado esperado
 
 La reserva debe crearse correctamente y la respuesta debe cumplir con el contrato esperado.
 
+---
 
+## 12. Flujo API 3 – Actualización de Reserva
 
-\---
-
-
-
-\## 11. Flujo API 3 – Actualización de Reserva
-
-
-
-\### Objetivo
-
-
+### Objetivo
 
 Actualizar una reserva existente usando un token válido.
 
-
-
-\### Flujo
-
-
+### Flujo
 
 ```mermaid
-
 flowchart TD
-
-&#x20;   A\[Generar token de autenticación] --> B\[Crear reserva]
-
-&#x20;   B --> C\[Enviar solicitud de actualización]
-
-&#x20;   C --> D\[Validar código HTTP]
-
-&#x20;   D --> E\[Validar datos actualizados]
-
+    A[Generar token] --> B[Crear reserva]
+    B --> C[Enviar solicitud de actualización]
+    C --> D[Validar código HTTP]
+    D --> E[Validar datos actualizados]
 ```
 
-
-
-\### Resultado Esperado
-
-
+### Resultado esperado
 
 La reserva debe actualizarse correctamente y la respuesta debe reflejar los datos modificados.
 
+---
 
+## 13. Flujo de Eventos – Kafka Compatible
 
-\---
-
-
-
-\## 12. Flujo de Eventos – Broker Compatible con Kafka
-
-
-
-\### Objetivo
-
-
+### Objetivo
 
 Validar un flujo orientado a eventos usando Redpanda, KafkaJS, Playwright y AJV.
 
+### Precondiciones
 
-
-\### Precondiciones
-
-
-
-\* Docker Desktop debe estar corriendo.
-
-\* Redpanda debe iniciarse mediante Docker Compose.
-
-\* La variable `KAFKA\_ENABLED=true` debe configurarse antes de ejecutar la prueba de eventos.
-
-
+* Docker Desktop debe estar corriendo.
+* Redpanda debe estar levantado mediante Docker Compose.
+* La variable `KAFKA_ENABLED=true` debe estar configurada antes de ejecutar la prueba.
 
 Comando para iniciar Redpanda:
 
-
-
 ```bash
-
 docker compose -f docker-compose.kafka.yml up -d
-
 ```
 
-
-
-Comando para ejecutar pruebas de eventos:
-
-
+Comando para ejecutar la prueba de eventos:
 
 ```bash
-
-set KAFKA\_ENABLED=true
-
+set KAFKA_ENABLED=true
 npm run test:events
-
 ```
 
-
-
-\### Flujo
-
-
+### Flujo
 
 ```mermaid
-
 flowchart TD
-
-&#x20;   A\[Iniciar broker Redpanda] --> B\[Crear tópico único de Kafka]
-
-&#x20;   B --> C\[Iniciar consumidor Kafka]
-
-&#x20;   C --> D\[Publicar evento booking.created]
-
-&#x20;   D --> E\[Consumir evento]
-
-&#x20;   E --> F\[Validar payload del evento]
-
-&#x20;   F --> G\[Validar contrato JSON Schema con AJV]
-
+    A[Iniciar Redpanda] --> B[Crear tópico único]
+    B --> C[Iniciar consumidor Kafka]
+    C --> D[Publicar evento booking.created]
+    D --> E[Consumir evento]
+    E --> F[Validar payload]
+    F --> G[Validar contrato JSON Schema]
 ```
 
+### Decisión técnica
 
+Se crea un tópico único por ejecución para evitar interferencias con mensajes antiguos o pruebas anteriores.
 
-\### Decisión Técnica
+Esto mejora el aislamiento del test y reduce el riesgo de falsos positivos o falsos negativos.
 
-
-
-Se crea un tópico único por cada ejecución para evitar interferencia con pruebas anteriores o mensajes antiguos.
-
-
-
-Esto mejora el aislamiento de la prueba y reduce el riesgo de consumir mensajes obsoletos.
-
-
-
-\### Resultado Esperado
-
-
+### Resultado esperado
 
 El evento debe publicarse, consumirse y validarse correctamente contra el contrato JSON Schema esperado.
 
+---
 
+## 14. Flujo de Reportería – Allure
 
-\---
-
-
-
-\## 13. Flujo de Reportería – Allure
-
-
-
-\### Objetivo
-
-
+### Objetivo
 
 Generar un reporte visual de la ejecución automatizada.
 
-
-
-\### Flujo
-
-
+### Flujo
 
 ```mermaid
-
 flowchart TD
-
-&#x20;   A\[Ejecutar suites de prueba] --> B\[Generar allure-results]
-
-&#x20;   B --> C\[Generar reporte Allure]
-
-&#x20;   C --> D\[Abrir reporte Allure]
-
-&#x20;   D --> E\[Revisar pruebas aprobadas y fallidas]
-
+    A[Ejecutar pruebas] --> B[Generar allure-results]
+    B --> C[Generar reporte Allure]
+    C --> D[Abrir reporte Allure]
+    D --> E[Revisar resultados]
 ```
-
-
 
 Comandos:
 
-
-
 ```bash
-
 npm run report:generate
-
 npm run report:open
-
 ```
 
-
-
-\### Resultado Esperado
-
-
+### Resultado esperado
 
 Allure debe mostrar las suites ejecutadas y su estado final.
 
+---
 
+## 15. Resumen de Comandos
 
-\---
-
-
-
-\## 14. Resumen de Comandos de Ejecución
-
-
-
-\### Pruebas API
-
-
+### API
 
 ```bash
-
 npm run test:api
-
 ```
 
-
-
-\### Pruebas Mobile
-
-
+### Mobile
 
 ```bash
-
 npm run test:mobile
-
 ```
 
-
-
-\### Pruebas de Eventos
-
-
+### Eventos
 
 ```bash
-
 docker compose -f docker-compose.kafka.yml up -d
-
-set KAFKA\_ENABLED=true
-
+set KAFKA_ENABLED=true
 npm run test:events
-
 ```
 
-
-
-\### Reporte Allure
-
-
+### Allure
 
 ```bash
-
 npm run report:generate
-
 npm run report:open
-
 ```
 
-
-
-\---
-
-
-
-\## 15. Flujo de Validación Final
-
-
-
-Antes de entregar el proyecto, se recomienda ejecutar el siguiente flujo de validación:
-
-
-
-```mermaid
-
-flowchart TD
-
-&#x20;   A\[Ejecutar pruebas API] --> B\[Ejecutar pruebas móviles]
-
-&#x20;   B --> C\[Ejecutar pruebas de eventos]
-
-&#x20;   C --> D\[Generar reporte Allure]
-
-&#x20;   D --> E\[Validar documentación]
-
-&#x20;   E --> F\[Validar estado Git]
-
-&#x20;   F --> G\[Subir cambios finales]
-
-```
-
-
-
-Validación final de Git:
-
-
+### Git
 
 ```bash
-
 git status
-
 ```
-
-
 
 Resultado esperado:
 
-
-
 ```text
-
 nothing to commit, working tree clean
-
 ```
 
+---
 
+## 16. Flujo de Validación Final
 
-\---
+Antes de entregar el proyecto, se recomienda ejecutar el siguiente flujo:
 
+```mermaid
+flowchart TD
+    A[Ejecutar API tests] --> B[Ejecutar Mobile tests]
+    B --> C[Ejecutar Event tests]
+    C --> D[Generar Allure report]
+    D --> E[Validar README]
+    E --> F[Validar AI_USAGE]
+    F --> G[Validar FLOW_DOCUMENTATION]
+    G --> H[Validar git status]
+```
 
+---
 
-\## 16. Conclusión
+## 17. Conclusión
 
+La solución implementada valida los principales flujos de calidad requeridos para el desafío técnico:
 
+* Flujos críticos de aplicación móvil.
+* Flujos principales de servicios API.
+* Validación de contratos mediante JSON Schema.
+* Flujo orientado a eventos usando un broker compatible con Kafka.
+* Reportería de ejecución con Allure.
 
-La solución implementada valida los principales flujos de calidad requeridos para el desafío:
-
-
-
-\* Flujos de aplicación móvil.
-
-\* Flujos de servicios API.
-
-\* Validación de contratos con JSON Schema.
-
-\* Flujo orientado a eventos usando un broker compatible con Kafka.
-
-\* Reportería de ejecución con Allure.
-
-
-
-El proyecto está estructurado, documentado y preparado para ejecutarse mediante scripts npm de forma clara y reproducible.
-
-
-
+El proyecto está estructurado, documentado y preparado para ejecutarse mediante scripts npm de forma clara, mantenible y reproducible.
