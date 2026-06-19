@@ -496,5 +496,6 @@ Si `KAFKA_ENABLED` no está configurado como `true`, la prueba de Kafka se omite
 
 
 
-Senior QA Engineer Automation Functional - David Rodríguez Castillo
+- Author: David Rodríguez Castillo
+- Role: Senior QA Engineer Automation Functional 
 
