@@ -21,7 +21,7 @@ acelerador y como recurso de soporte durante etapas específicas del proyecto.
 * **ChatGPT** — apoyo en la planificación del flujo de trabajo, generación de boilerplate inicial
   (estructura de page objects, configuración de WebdriverIO/Playwright, esqueletos de specs),
   interpretación de errores de Appium/WebdriverIO, y apoyo en la redacción y revisión de la
-  documentación (README, este archivo) y del guion de sustentación en video.
+  documentación (README, este archivo).
 * **GitHub Copilot** — autocompletado y generación de boilerplate dentro del editor durante la
   escritura de page objects y specs.
 * **Claude** — revisión de selectores, validación de buenas prácticas de automatización y apoyo en
