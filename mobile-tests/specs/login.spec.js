@@ -8,6 +8,10 @@ describe('Login flow', () => {
             appId: 'com.saucelabs.mydemoapp.android'
         });
 
+        await driver.execute('mobile: clearApp', {
+            appId: 'com.saucelabs.mydemoapp.android'
+        });
+
         await driver.execute('mobile: activateApp', {
             appId: 'com.saucelabs.mydemoapp.android'
         });
