@@ -1,45 +1,25 @@
-const assert = require('assert');
-const MenuPage = require('../page-objects/MenuPage');
+const { expect } = require('@wdio/globals');
 const LoginPage = require('../page-objects/LoginPage');
 
 describe('Login flow', () => {
     beforeEach(async () => {
-        await driver.execute('mobile: terminateApp', {
-            appId: 'com.saucelabs.mydemoapp.android'
-        });
-
-        await driver.execute('mobile: clearApp', {
-            appId: 'com.saucelabs.mydemoapp.android'
-        });
-
-        await driver.execute('mobile: activateApp', {
-            appId: 'com.saucelabs.mydemoapp.android'
-        });
-
-        await MenuPage.goToLogin();
+        await LoginPage.resetApp();
+        await LoginPage.openLoginScreen();
     });
 
     it('should not login with locked out user credentials', async () => {
         await LoginPage.login('alice@example.com', '10203040');
 
-        const isProductsScreenVisible = await LoginPage.isProductsScreenVisible(5000);
+        const isProductsVisible = await LoginPage.isProductsScreenVisible(5000);
 
-        assert.strictEqual(
-            isProductsScreenVisible,
-            false,
-            'Products screen should not be displayed for locked out user credentials'
-        );
+        expect(isProductsVisible).toBe(false);
     });
 
     it('should login successfully with valid credentials', async () => {
         await LoginPage.login('bod@example.com', '10203040');
 
-        const isProductsScreenDisplayed = await LoginPage.isProductsScreenDisplayed();
+        const isProductsVisible = await LoginPage.isProductsScreenVisible(30000);
 
-        assert.strictEqual(
-            isProductsScreenDisplayed,
-            true,
-            'Products screen should be displayed after successful login'
-        );
+        expect(isProductsVisible).toBe(true);
     });
 });

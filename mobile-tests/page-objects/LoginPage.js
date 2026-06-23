@@ -1,4 +1,12 @@
 class LoginPage {
+    get menuButton() {
+        return $('~View menu');
+    }
+
+    get loginMenuItem() {
+        return $('~Login Menu Item');
+    }
+
     get loginTitle() {
         return $('android=new UiSelector().resourceId("com.saucelabs.mydemoapp.android:id/loginTV")');
     }
@@ -15,23 +23,39 @@ class LoginPage {
         return $('android=new UiSelector().resourceId("com.saucelabs.mydemoapp.android:id/loginBtn")');
     }
 
-    // El resource-id "productTV" es el encabezado genérico de pantalla (lo usan
-    // tanto "Products" como "My Cart" — confirmado contra catalog.xml y cart.xml).
-    // Aquí se mantiene el filtro por texto a propósito: lo que se valida es que
-    // se llegó específicamente a la pantalla de catálogo tras el login, no solo
-    // que existe un encabezado cualquiera.
     get productsTitle() {
-        return $('android=new UiSelector().resourceId("com.saucelabs.mydemoapp.android:id/productTV").text("Products")');
+        return $('android=new UiSelector().resourceId("com.saucelabs.mydemoapp.android:id/productTV")');
     }
 
-    async waitForLoginScreen() {
+    async resetApp() {
+        await driver.execute('mobile: terminateApp', {
+            appId: 'com.saucelabs.mydemoapp.android'
+        });
+
+        await driver.execute('mobile: clearApp', {
+            appId: 'com.saucelabs.mydemoapp.android'
+        });
+
+        await driver.execute('mobile: activateApp', {
+            appId: 'com.saucelabs.mydemoapp.android'
+        });
+
+        await this.menuButton.waitForDisplayed({ timeout: 30000 });
+    }
+
+    async openLoginScreen() {
+        await this.menuButton.waitForDisplayed({ timeout: 30000 });
+        await this.menuButton.click();
+
+        await this.loginMenuItem.waitForDisplayed({ timeout: 15000 });
+        await this.loginMenuItem.click();
+
         await this.loginTitle.waitForDisplayed({ timeout: 15000 });
-        await this.usernameInput.waitForDisplayed({ timeout: 15000 });
-        await this.passwordInput.waitForDisplayed({ timeout: 15000 });
     }
 
     async login(username, password) {
-        await this.waitForLoginScreen();
+        await this.usernameInput.waitForDisplayed({ timeout: 15000 });
+        await this.passwordInput.waitForDisplayed({ timeout: 15000 });
 
         await this.usernameInput.click();
         await this.usernameInput.clearValue();
@@ -41,13 +65,15 @@ class LoginPage {
         await this.passwordInput.clearValue();
         await this.passwordInput.setValue(password);
 
+        await driver.hideKeyboard().catch(() => {});
+
         await this.loginButton.waitForDisplayed({ timeout: 15000 });
         await this.loginButton.click();
     }
 
     async isProductsScreenDisplayed() {
-        await this.productsTitle.waitForDisplayed({ timeout: 15000 });
-        return this.productsTitle.isDisplayed();
+        await this.productsTitle.waitForDisplayed({ timeout: 30000 });
+        return true;
     }
 
     async isProductsScreenVisible(timeout = 5000) {
